@@ -1,0 +1,128 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+
+.wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.like {
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  width: 300px;
+
+  
+}
+
+.liked {
+  color: #F1599E;
+}
+</style>
+<h1 id="title">식당
+ <p align = "right">
+  <button class= "btn btn-primary">스크랩</button> 
+  <%= link_to "리뷰작성", new_review_path(restaurant_id: @restaurant.id),class: "btn btn-secondary"%>
+ </p>
+</h1>
+
+<hr>
+
+ 
+
+<h3>리뷰  목록</h3>
+<ul class="list-group">
+  <% @restaurant.reviews.each do |review| %>
+      <li class="list-group-item ">
+         맛평가 : 
+          <% (1..review.taste_eval).each do%>
+              <span class="fa fa-star checked" style="width:11px; margin-top:-5px; font-size:9px; color:#FFD700;"></span>
+          <%end%>
+          <% tmp = 5- review.taste_eval%>
+          <% (1..tmp).each do %>
+            <span class="fa fa-star" style="width:11px; margin-top:-5px; font-size:9px; color:#808080;"></span>
+          <% end %>
+          &nbsp;&nbsp;
+          서비스평가 :
+          <% (1..review.service_eval).each do%>
+              <span  class="fa fa-star checked" style="width:11px; margin-top:-5px; font-size:9px; color:#FFD700;"></span>
+          <%end%>
+          <% tmp = 5- review.service_eval%>
+          <% (1..tmp).each do %>
+            <span class="fa fa-star" style="width:11px; margin-top:-5px; font-size:9px; color:#808080;"></span>
+          <% end %>
+          &nbsp;&nbsp;
+          가격평가 : 
+           <% (1..review.price_eval).each do%>
+              <span  class="fa fa-star checked" style=" width:11px; margin-top:-5px; font-size:9px; color:#FFD700;"></span>
+          <%end%>
+          <% tmp = 5- review.price_eval%>
+          <% (1..tmp).each do %>
+            <span class="fa fa-star" style="width:11px; margin-top:-5px; font-size:9px; color:#808080;"></span>
+          <% end %>
+          
+  
+      <br><p><%= simple_format(review.contents) %></p>
+      <p align="right">
+        <% if @user_likes_review.nil? %>
+          <div class="wrapper">
+            <div class="like">
+              <span class="heart">❤</span> 
+               <span class="count"></span>
+            </div>
+          </div>
+         <!--(<span class="like-count"><%=review.likes.count%></span>)-->
+        <% else %>  
+          <button class="btn btn-warning text-white like">좋아요 취소(<span class="like-count"><%=review.likes.count%></span>)</button>
+        <% end %> 
+      </p>
+      
+      
+      </li>
+  <% end %>
+</ul>
+
+
+
+<hr>
+<% if user_signed_in? %>
+<!-- 로그인된 상태  -->
+<%= link_to "#{current_user.email}" %>
+<%= link_to '로그 아웃', destroy_user_session_path, method: "delete" %>
+<% else %>
+<!-- 로그아웃된 상태  -->
+<%= link_to '로그인', new_user_session_path %>
+<%  end %>
+
+
+
+
+<script>
+$(document).ready(function(){
+  
+  var $like = $('.like'),
+      $count = $('.count'),
+      $liked = false;
+  
+
+  var $randNum = 0;
+  $count.text($randNum);
+  
+  $like.on('click', function(){
+    console.log($liked);
+    if(!$liked) {
+        $(this).addClass('liked');
+        $count.text($randNum + 1);
+        $liked = true;
+    } else {
+        $(this).removeClass('liked');
+        $count.text($randNum);
+        $liked = false;
+    }
+    
+  });
+});
+  
+</script>
